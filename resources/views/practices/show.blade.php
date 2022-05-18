@@ -3,15 +3,17 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-12">
                 <div class="card mb-3">
                     <div class="card-header">{{ __('Practice Name') }}</div>
-
+    
                     <div class="card-body">
                         <h3>{{$practice->name}}</h3>
                     </div>
-
+    
                 </div>
+            </div>
+            <div class="col-md-8">
                 <div class="card mb-3">
                     <div class="card-header">{{ __('Employees') }}</div>
 
@@ -27,9 +29,12 @@
                             </tr>
                             </thead>
                             <tbody>
+                                @php
+                                $n = 1;
+                            @endphp
                             @foreach($practice->employees as $employee)
                                 <tr>
-                                    <th scope="row">{{$employee->id}}</th>
+                                    <th scope="row">{{$n++}}</th>
                                     <td>{{$employee->first_name}}</td>
                                     <td>{{$employee->last_name}}</td>
                                     <td>{{$employee->email}}</td>
@@ -40,6 +45,9 @@
                         </table>
                     </div>
                 </div>
+                
+            </div>
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">{{ __('Available Fields') }}</div>
 
@@ -52,9 +60,12 @@
                             </tr>
                             </thead>
                             <tbody>
+                                @php
+                                $n = 1;
+                            @endphp
                             @foreach($practice->fields as $field)
                                 <tr>
-                                    <th scope="row">{{$field->id}}</th>
+                                    <th scope="row">{{$n++}}</th>
                                     <td>{{$field->name}}</td>
                                 </tr>
                             @endforeach
