@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Practice;
+use DB;
 use Illuminate\Http\Request;
 use View;
+use Illuminate\Support\Facades\Validator;
 
 class PracticeController extends Controller
 {
@@ -15,12 +17,27 @@ class PracticeController extends Controller
      */
     public function index()
     {
-        $practices = Practice::simplePaginate(10);
+        $practices = Practice::paginate(10);
+        
+        return view('practices.index', compact('practices'));
 
-        return response()->json(['status' => true, 'message' => 'Operation successful', 'data' => $practices]);
+        // return response()->json(['status' => true, 'message' => 'Operation successful', 'data' => $practices]);
 
     }
 
+
+    /**
+     * Display a listing of the resource for api.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function list()
+    {
+        $practices = Practice::all();
+        
+        return response()->json(['status' => true, 'message' => 'Operation successful', 'data' => $practices]);
+
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -28,7 +45,7 @@ class PracticeController extends Controller
      */
     public function create()
     {
-        //
+        return view('practices.create');
     }
 
     /**
@@ -40,24 +57,35 @@ class PracticeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validation = Validator::make($request->all(), [
             'name' => 'required|string|unique:practices,name',
-            'logo' => 'dimensions:min_width=100,min_height=100'
+            'email' => 'required|email',
+            'logo' => 'required|image|dimensions:min_width=100,min_height=100',
+            'url' => 'nullable|url'
         ]);
 
-        $data = ['name' => $request->input('name')];
+        if($validation->fails()){
+            return redirect()->back()->withErrors($validation);
+        }
+
+        $data = ['name' => $request->name, 'email'=> $request->email , 'website_url'=>$request->url];
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $fileName = $file->getClientOriginalName();
             $destinationPath = public_path() . '/images';
             $file->move($destinationPath, $fileName);
-            $data['logo'] = $destinationPath . "/" . $fileName;
+            $data['logo'] = $fileName;
         }
 
         $practice = Practice::create($data);
 
-        return response()->json(['status' => true, 'message' => 'Operation successful', 'data' => $practice]);
+        if($practice){
+            return redirect()->route('practices.index')->withSuccess('Operation Successful');
+        }
+        return redirect()->back()->withError('Unable to create practice');
+
+        // return response()->json(['status' => true, 'message' => 'Operation successful', 'data' => $practice]);
 
     }
 
@@ -68,9 +96,11 @@ class PracticeController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show($id): \Illuminate\View\View
+    public function show(Request $request, $id): \Illuminate\View\View
     {
-        $practice = Practice::with('fields', 'employees')->find($id);
+        $practice = Practice::with('fields', 'employees')->find($request->id);
+
+        // dd($practice);
 
         return view('practices.show', compact('practice'));
     }
@@ -84,7 +114,8 @@ class PracticeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $practice = Practice::find($id);
+        return view('practices.edit', compact('practice'));
     }
 
     /**
@@ -95,10 +126,37 @@ class PracticeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request)
     {
-        $practice = Practice::find($id);
-        $practice->update($request->all());
+        $validation = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'logo' => 'image|dimensions:min_width=100,min_height=100',
+            'url' => 'nullable|url'
+        ]);
+
+        if($validation->fails()){
+            return redirect()->back()->withErrors($validation);
+        }
+
+        $data = ['name' => $request->name, 'email'=> $request->email , 'website_url'=>$request->url];
+
+        // return $request->id;
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $fileName = $file->getClientOriginalName();
+            $destinationPath = public_path() . '/images';
+            $file->move($destinationPath, $fileName);
+            $data['logo'] = $fileName;
+        }
+
+        $practice = DB::table('practices')->where('id', $request->id)->update($data);
+
+        
+        return redirect()->back()->withSuccess('Operation Successful');
+  
+
     }
 
     /**
@@ -111,5 +169,8 @@ class PracticeController extends Controller
     public function destroy(int $id)
     {
         Practice::destroy($id);
+        return redirect()->back()->withSuccess('Operation Successful');
+
     }
+
 }
