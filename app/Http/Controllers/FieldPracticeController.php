@@ -14,7 +14,7 @@ class FieldPracticeController extends Controller
     {
         $practices = DB::table('fields_of_practices')->select('fields_of_practices.*', 'fields_of_practices.name as practice_name')
                     ->leftJoin('practices', 'practices.id', 'fields_of_practices.practice_id')
-                    ->paginate(2);
+                    ->paginate(10);
 
         return view('field_practice.index', compact('practices'));
 

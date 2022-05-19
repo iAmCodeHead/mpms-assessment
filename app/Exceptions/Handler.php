@@ -44,34 +44,34 @@ class Handler extends ExceptionHandler
         });
     }
 
-    public function render($request, Throwable $e)
-    {
+    // public function render($request, Throwable $e)
+    // {
 
-        if ($e instanceof ValidationException) {
+    //     if ($e instanceof ValidationException) {
 
-            return response()->json(['status' => false, 'data' => $request->input(), 'message' => Arr::flatten($e->errors())[0]], 422);
+    //         return response()->json(['status' => false, 'data' => $request->input(), 'message' => Arr::flatten($e->errors())[0]], 422);
 
-        }
+    //     }
 
-        if ($e instanceof AuthenticationException) {
+    //     if ($e instanceof AuthenticationException) {
 
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 401);
+    //         return response()->json(['status' => false, 'error' => $e->getMessage()], 401);
 
-        }
+    //     }
 
-        if ($e instanceof ModelNotFoundException) {
+    //     if ($e instanceof ModelNotFoundException) {
 
-            return response()->json(['status' => false, 'error' => 'Entry for '.str_replace('App\\', '', $e->getModel()).' not found'], 404);
+    //         return response()->json(['status' => false, 'error' => 'Entry for '.str_replace('App\\', '', $e->getModel()).' not found'], 404);
 
-        }
+    //     }
 
-        if($e instanceof UnexpectedValueException) {
+    //     if($e instanceof UnexpectedValueException) {
 
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+    //         return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
 
-        }
+    //     }
 
-        return response()->json(['status' => false, 'error' => $e->getMessage()], 500);
+    //     return response()->json(['status' => false, 'error' => $e->getMessage()], 500);
 
-    }
+    // }
 }

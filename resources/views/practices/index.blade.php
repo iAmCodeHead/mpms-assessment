@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-header"><span style="font-size: 20px">{{ __('Practices') }} </span><a href="{{route('practices.create')}}" class="btn btn-primary" style="float:right">Create New</a></div>
 
@@ -27,7 +27,7 @@
                                     <th scope="row">{{$practice->id}}</th>
                                     <td>{{$practice->name}}</td>
                                     <td>{{$practice->email}}</td>
-                                    <td>{{$practice->Url}}</td>
+                                    <td>{{$practice->website_url}}</td>
                                     <td>
                                         <a href="{{route('practices.edit',['id'=>$practice->id ])}}" class="btn btn-sm btn-info">Edit</a>
                                         <a  href="{{route('practices.show',['id'=>$practice->id ])}}" class="btn btn-sm btn-success" >Show</a>
