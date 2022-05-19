@@ -16,32 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::post('/login', [AuthController::class, 'login']);
-
-// //Protected Routes
-// Route::group(['middleware' => ['auth:web']], function(){
-
-//      Route::get('/practices/list', [PracticeController::class, 'list']);
-
-//     // Route::get('/employees', [EmployeeController::class, 'index']);
-
-//     // Route::get('/employees/{id}', [EmployeeController::class, 'show']);
-
-//     // Route::post('/employees', [EmployeeController::class, 'store']);
-
-//     // Route::get('/practices', [APracticeController::class, 'index']);
-
-//     // Route::post('/practices', [PracticeController::class, 'store']);
-
-// //    Route::post('/logout', [AuthController::class, 'logout']);
-// });
-
 Route::get('/practices/list', [PracticeController::class, 'list']);
 
 Route::fallback(function(){
     return response()->json(['status' => false, 'message' => 'This Route does not exist. Be sure you are calling the right method with no typo'], 404);
 });
-
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
